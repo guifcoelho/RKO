@@ -34,6 +34,7 @@ extern int numLS;                           // 0 - without local search     > k 
 extern int MAXTIME;                         // maximum runtime
 extern float OPTIMAL;                       // optimal solution (if it is known)
 extern struct timeval Tstart, Tend, Tbest;  // computational time (unix systems)  
+extern unsigned MAX_THREADS;            // number of threads
 
 extern int n;                                      // size of cromossoms
 extern TSol bestSolution;                          // best solution found in the A-BRKGA
@@ -45,7 +46,7 @@ static double pe;              	                // fraction of population to be 
 static double pm;          	                    // fraction of population to be replaced by mutants
 static double rhoe;             	                // probability that offspring inherit an allele from elite parent
 
-static double sigma;                               // pearson correlation factor
+static double sigma = 0.6;                               // pearson correlation factor
 
 static const double PI = 3.14159265;               // pi
 

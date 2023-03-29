@@ -694,7 +694,7 @@ void IC()
 		for (int j = i + 1; j < Tpe; j++)
 		{
 			pearson = PearsonCorrelation(Pop[i].vec, Pop[j].vec);
-			if (pearson > 0.6) {
+			if (pearson > sigma) {
 				entrouAresta++;
 				listaArestas[i].push_back(std::make_pair(j, pearson));
 				listaArestas[j].push_back(std::make_pair(i, pearson));

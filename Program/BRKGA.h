@@ -34,6 +34,7 @@ extern int numLS;                           // 0 - without local search     > k 
 extern int MAXTIME;                         // maximum runtime
 extern float OPTIMAL;                       // optimal solution (if it is known)
 extern struct timeval Tstart, Tend, Tbest;  // computational time (unix systems)  
+extern unsigned MAX_THREADS;                // number of threads
 
 extern int n;                                      // size of cromossoms
 extern TSol bestSolution;                          // best solution found in the A-BRKGA

@@ -4,6 +4,8 @@
 
 #include <sys/time.h>
 #include <math.h>
+#include <cstring>
+#include <ctime>
 
 // /************************************************************************************
 // 								GLOBAL VARIABLES
@@ -51,8 +53,13 @@ int main(int argc, char *argv[ ])
 
     // best solution that is saved in out file
     TSol sBest;
+    sBest.flag = 0;
+    sBest.label = 0;
+    sBest.ofv = 0;
+    sBest.similar = 0;
+    sBest.vec.clear();
 
-	// run the BRKGA-QL for all test instances
+	// run the RKO-MH for all test instances
 	while (!feof(arqProblems))
 	{
 		// read the name of instances, debug mode, local search module, maximum time, maximum number of runs, maximum number of threads
@@ -71,7 +78,7 @@ int main(int argc, char *argv[ ])
         // best solutions found in MAXRUNS
         sBest.ofv = INFINITY;
 
-		// run BRKGA-QL MaxRuns for each instance
+		// run RKO MaxRuns for each instance
         printf("\n\nInstance: %s \nRun: ", instance);
         for (int j=0; j<MAXRUNS; j++)
         {
@@ -79,7 +86,7 @@ int main(int argc, char *argv[ ])
             if (debug == 1)
                 srand(j+1); 
             else
-                srand(time(NULL));
+                srand(time(NULL)); 
 
             printf("%d ", j+1);
             
