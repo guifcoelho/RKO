@@ -40,7 +40,7 @@ The code structure is documented in [1] and organized in the following manner:
 
 * **GENERAL_CODE:**
     * **MH.cpp**: Contains all of the metaheuristic (MH) algorithm's mechanisms.
-    * **Main.cpp: Contains the main function to start the algorithm and stores the global variables.
+    * **Main.cpp**: Contains the main function to start the algorithm and stores the global variables.
     * **Data.h**: Represents the data structures.
     * **Output.h**: Stores the outputs functions, including the best solution found and statistical analysis of the MH.
 
