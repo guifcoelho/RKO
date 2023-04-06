@@ -52,15 +52,18 @@ void SA()
 
                 // Shake the current solution
                 sViz = s;
-                float shaking_type = 0.0;
+                int shaking_type = 0.0;
                 int intensity = n*0.05;
                 for(int k = 0; k < intensity; k++) 
                 {
-                    shaking_type = irandomico(1,4);
+                    shaking_type = irandomico(1,4); //printf("\nType: %d\n",shaking_type);
                     int i = irandomico(0, n - 1);
                     if(shaking_type == 1){
                         // Invert value
-                        sViz.vec[i].rk = 1.0 - sViz.vec[i].rk;
+                        if (sViz.vec[i].rk > 0.0001)
+                            sViz.vec[i].rk = 1.0 - sViz.vec[i].rk;
+                        else
+                            sViz.vec[i].rk = 0.9999;
                     }
                     else 
                     if (shaking_type == 2){
