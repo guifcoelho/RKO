@@ -17,21 +17,19 @@ extern int n;                               // size of cromossoms
 
 //------ DEFINITION OF TYPES OF PROBLEM SPECIFIC --------
 
-static std::vector <int> a;							// assigment vector
-static std::vector <int> h;							// hub vector
-static std::vector <int> hP;						// hub position vector 
-static std::vector <std::vector <int> > Tp;			// matrix with tree
-static std::vector <std::vector <double> > cT;		// matrix with cost of tree
-
+// struct with node informations
+struct TNode								
+{
+	int id;
+	double x;
+	double y;
+}; 
 
 //------ DEFINITION OF GLOBAL CONSTANTS AND VARIABLES OF SPECIFIC PROBLEM  --------
 
 static std::vector <std::vector <double> > dist;	// matrix with Euclidean distance
-static std::vector <std::vector <double> > flow;	// matrix with flow
+static std::vector <TNode> node;					// vector of TSP nodes
 
-static int nPontos;
-static int nHubs;
-static double alfaH;
 
 
 //-------------------------- FUNCTIONS OF SPECIFIC PROBLEM --------------------------
@@ -69,10 +67,52 @@ double CalculateFitness(TSol s);
 void Dec1(TSol &s);
 
 /************************************************************************************
+ Method: Dec2
+ Description: 2-opt decoder 
+*************************************************************************************/
+void Dec2(TSol &s);
+
+/************************************************************************************
+ Method: Dec3
+ Description: Cheapest Insertion decoder 
+*************************************************************************************/
+void Dec3(TSol &s);
+
+/************************************************************************************
+ Method: Dec4
+ Description: k-Farthest Insertion decoder 
+*************************************************************************************/
+void Dec4(TSol &s);
+
+/************************************************************************************
+ Method: Dec5
+ Description: k-Nearest Insertion decoder 
+*************************************************************************************/
+void Dec5(TSol &s);
+
+/************************************************************************************
  Method: LS1
  Description: 2-Opt
 *************************************************************************************/
 void LS1(TSol &s);
+
+/************************************************************************************
+ Method: LS2
+ Description: NodeInsertion
+*************************************************************************************/
+void LS2(TSol &s);
+
+/************************************************************************************
+ Method: LS3
+ Description: NodeExchange
+*************************************************************************************/
+void LS3(TSol &s);
+
+/************************************************************************************
+ Method: LS4
+ Description: OrOpt2
+*************************************************************************************/
+void LS4(TSol &s);
 
 /************************************************************************************
  Method: FreeMemoryProblem

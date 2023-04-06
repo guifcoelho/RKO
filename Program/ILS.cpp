@@ -38,7 +38,7 @@ void ILS()
 
     
         // define parameters
-        double betaMax = 0.10,
+        double betaMax = 0.20,
     	       betaMin = 0.05;
 
 
@@ -61,10 +61,7 @@ void ILS()
                 int i = irandomico(0, n - 1);
                 if(shaking_type == 1){
                     // Invert value
-                    if (sViz.vec[i].rk > 0.0001)
-                        sViz.vec[i].rk = 1.0 - sViz.vec[i].rk;
-                    else
-                        sViz.vec[i].rk = 0.9999;
+                    sViz.vec[i].rk = 1.0 - sViz.vec[i].rk;
                 }
                 else 
                 if (shaking_type == 2){

@@ -39,7 +39,7 @@ extern int n;                               // size of cromossoms
 extern TSol bestSolution;                   // best solution found in the A-BRKGA
 
 
-//MS
+//SA
 static TSol s;                              // solução corrente do SA
 static TSol sMelhor;                        // melhor solução do SA
 static TSol sViz;                           // solução vizinha

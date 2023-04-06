@@ -44,7 +44,7 @@ static double beta = 0;                            //taxa de perturbação
 static int Iter = 0;
 static int IterMax = 5000;
 static int IterMelhora = 0;
-static double delta = 0;
+static int delta = 0;
 
 static TSol s,
             sMelhor,     

@@ -6,7 +6,7 @@
 #include <math.h>
 #include <cstring>
 #include <ctime>
- 
+
 // /************************************************************************************
 // 								GLOBAL VARIABLES
 // *************************************************************************************/
@@ -114,10 +114,6 @@ int main(int argc, char *argv[ ])
 
             case 4:
                 BRKGA_QL();
-                break;
-            
-            case 5:
-                ILS();
                 break;
             
             default:

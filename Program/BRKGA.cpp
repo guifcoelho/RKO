@@ -175,10 +175,7 @@ void BRKGA()
                     int i = irandomico(0, n - 1);
                     if(shaking_type == 1){
                         // Invert value
-                        if (Pop[e].vec[i].rk > 0.0001)
-                            Pop[e].vec[i].rk = 1.0 - Pop[e].vec[i].rk;
-                        else
-                            Pop[e].vec[i].rk = 0.9999;
+                        Pop[e].vec[i].rk = 1.0 - Pop[e].vec[i].rk;
                     }
                     else 
                     if (shaking_type == 2){
