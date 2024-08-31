@@ -13,22 +13,35 @@ Here, we have the RKO version 1.0 code.
 When using this algorithm in academic studies, please refer to the following works:
 
 RKO version 1.0
-[1] Chaves, A.A. (2023)
+[1] REF (2024)
 RKO
-Available here in technical report form (as soon as possible).
+Available here in technical report form.
 
 ## Scope
 
-This code has been designed to solve the Traveling Salesman Problem (TSP). To solve other problems, users need to configure only the Problem.cpp file.
+This code has been designed to solve the Traveling Salesman Problem (TSP). To solve other problems, users only need to configure the Problem.cpp file.
 
 
 ## Running the algorithm
 
 * Enter the Program directory: `cd Program`
-* Run the make command: `make`
-* Run the RKO: `./runTest testScenario.csv K`, k is the number of metaheuristics used to solve the TSP
+* Run the make command: `make rebuild`
+* Run the RKO: `./runTest ../Instances/testScenario.csv K T D`, where k is the number of metaheuristics used to solve the problem, T is the tuning method (0 is offline and 1 is online), and D is the debug mode (1 to print information in the screen and 0 to save information in file)
 
-* Or compile via terminal: `g++ -std=c++11 -o runTest BRKGA_QL.cpp Problem.cpp -O3 -fopenmp`
+* Available metaheuristics
+"BRKGA",     // 0
+"SA",        // 1
+"GRASP",     // 2
+"ILS",       // 3
+"VNS",       // 4
+"PSO",       // 5
+"GA",        // 6
+"LNS",       // 7
+"BRKGA_CS",  // 8
+"RKO",       // 9
+"MultiStart" // 10
+
+* Or compile via terminal: `g++ -std=c++20 -o runTest main.cpp -O3 -fopenmp`
 
 
 ## Code structure
