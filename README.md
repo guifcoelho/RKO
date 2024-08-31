@@ -28,18 +28,18 @@ This code has been designed to solve the Traveling Salesman Problem (TSP). To so
 * Run the make command: `make rebuild`
 * Run the RKO: `./runTest ../Instances/testScenario.csv K T D`, where k is the number of metaheuristics used to solve the problem, T is the tuning method (0 is offline and 1 is online), and D is the debug mode (1 to print information in the screen and 0 to save information in file)
 
-* Available metaheuristics
-"BRKGA",     // 0
-"SA",        // 1
-"GRASP",     // 2
-"ILS",       // 3
-"VNS",       // 4
-"PSO",       // 5
-"GA",        // 6
-"LNS",       // 7
-"BRKGA_CS",  // 8
-"RKO",       // 9
-"MultiStart" // 10
+* Available metaheuristics:
+"BRKGA"      = 0,
+"SA"         = 1,
+"GRASP"      = 2,
+"ILS"        = 3
+"VNS"        = 4
+"PSO"        = 5
+"GA"         = 6
+"LNS"        = 7
+"BRKGA_CS"   = 8
+"RKO"        = 9
+"MultiStart" = 10
 
 * Or compile via terminal: `g++ -std=c++20 -o runTest main.cpp -O3 -fopenmp`
 
