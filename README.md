@@ -1,11 +1,11 @@
 
-# RKO - Random-key optimitization 
+# RKO - Random-key optimizer 
 
-This is an implementation of the RKO to solve combinatorial optmization problems.
+This is an implementation of the RKO to solve combinatorial optimization problems.
 
-The C++ code of this algorithm has been designed to be easy of reuse. Users can only implement specific functions (read, decoder and local search). 
+This algorithm's C++ code has been designed to be easy to reuse. Users can only implement specific functions (read and decoder). 
 
-Here we have the RKO version 1.0 code.
+Here, we have the RKO version 1.0 code.
 
 
 ## References
@@ -15,20 +15,20 @@ When using this algorithm in academic studies, please refer to the following wor
 RKO version 1.0
 [1] Chaves, A.A. (2023)
 RKO
-Available here in technical report form (as soon).
+Available here in technical report form (as soon as possible).
 
 ## Scope
 
-This code has been designed to solve the Traveling Salesman Problem (TSP). Users need to configure only Problem.cpp file to solve other problem.
+This code has been designed to solve the Traveling Salesman Problem (TSP). To solve other problems, users need to configure only the Problem.cpp file.
 
 
 ## Running the algorithm
 
 * Enter the Program directory: `cd Program`
 * Run the make command: `make`
-* Run the RKO: `./runTest testScenario.csv K`, k is the number of metatheuristic used to solve the TSP
+* Run the RKO: `./runTest testScenario.csv K`, k is the number of metaheuristics used to solve the TSP
 
-* Or compile via terminal: `g++ -std=c++11 -o runTest BRKGA_QL.cpp Problem.cpp -O3 -openmp` (or -fopenmp if Linux)
+* Or compile via terminal: `g++ -std=c++11 -o runTest BRKGA_QL.cpp Problem.cpp -O3 -fopenmp`
 
 
 ## Code structure
@@ -42,17 +42,12 @@ The code structure is documented in [1] and organized in the following manner:
     * **MH.cpp**: Contains all of the metaheuristic (MH) algorithm's mechanisms.
     * **Main.cpp**: Contains the main function to start the algorithm and stores the global variables.
     * **Data.h**: Represents the data structures.
-    * **Output.h**: Stores the outputs functions, including the best solution found and statistical analysis of the MH.
+    * **Output.h**: Stores the output functions, including the best solution found and statistical analysis of the MH.
 
-## File testScenario.csv is the input data problem and each line consists in:
+## File testScenario.csv is the input data problem, and each line consists of:
 
 - Instance Name
-- Run mode (0 = debug, prints in the screen; 1 = run, prints in files)
-- Number of implemented decoders
-- Number of implemented local search heuristics (0 if local search is not available)
-- Maximum rumtime (in seconds)
+- Maximum runtime (in seconds)
 - Maximum number of runs
-- Number of threads used in OpenMP
-- Optimal or lower bound solution (if is known), 0 otherwise
 
-Users need to create a folder named "Instances/ProblemName", where the instances must be; Users also need to create a folder named "Results" where the results files are writed.
+Users need to create a folder named "Instances/ProblemName", where the instances must be; users also need to create a folder named "Results", where the results files are written.
