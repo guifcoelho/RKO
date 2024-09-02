@@ -49,7 +49,7 @@ This code has been designed to solve the Traveling Salesman Problem (TSP). To so
 The code structure is documented in [1] and organized in the following manner:
 
 * **SPECIFIC_CODE:**
-    * **Problem.cpp**: Contains data structure of the problem, the input function, the decoders, and the local search heuristics.
+    * **Problem.cpp**: Contains data structure of the problem, the input function, and the decoder.
 
 * **GENERAL_CODE:**
     * **MH.cpp**: Contains all of the metaheuristic (MH) algorithm's mechanisms.
