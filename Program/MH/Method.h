@@ -139,7 +139,7 @@ void ShakeSolution(TSol &s, float betaMin, float betaMax)
         }
         else
         if(shaking_type == 2){
-            // Invert value
+            // Mirror value
             if (s.rk[i] > 0.0001)
                 s.rk[i] = 1.0 - s.rk[i];
             else
@@ -161,106 +161,6 @@ void ShakeSolution(TSol &s, float betaMin, float betaMax)
             s.rk[i+1] = temp;
         }
     }
-}
-
-/************************************************************************************
- Method: hNeighborhood
- Description: Consider the set of points in v that are integer steps (of size h) away 
- from x. Define the projection of the points in v onto the hyper-sphere centered at 
- x of radius h. The h-neighborhood of the point x is defined as the set of points 
- in Bh. The algorithm randomly selects points in Bh, one at a time. 
-*************************************************************************************/
-TSol hNeighborhood(TSol x, float h) //, float theta
-{
-    // direction vector
-    std::vector<double> v;      
-    v.resize(n);
-
-    // define a random order for the neighors
-    std::shuffle (RKorder.begin(), RKorder.end(),rng);
-
-    double norm = 0.0;
-    for (int i=0; i<n; i++)
-    {
-        if (randomico(0.0,1.0) <= 0.5)
-            v[i] = irandomico(1, ceil((1.0 - x.rk[i]) / h) ); 
-        else
-            v[i] = -1 * irandomico(1, ceil((x.rk[i]) / h) ); 
-        
-        // v[i] = irandomico(-1, 1); 
-        norm += pow(v[i] * h, 2);
-    }
-    norm = sqrt(norm);
-    if (norm == 0) norm = 0.0001;
-
-    // neighbor solution
-    TSol xBest;
-    xBest = x;
-    xBest.ofv = INFINITY;
-    int numIter = n*exp(-0.7);
-    // #pragma omp parallel for num_threads(MAX_THREADS)
-    for (int i=0; i<numIter; i++)
-    {
-        // if (randomico(0.0,1.0) < theta)
-        // {
-            // printf("\nrk[%d]: %lf",RKorder[i], x.vec[RKorder[i]].rk);
-            x.rk[RKorder[i]] = x.rk[RKorder[i]] + (1.0/norm) * h * v[i] * h;      // esta no codigo
-
-            // if value without [0,1), invert the direction
-            if (x.rk[RKorder[i]] < 0 || x.rk[RKorder[i]] >= 1.0){
-                x.rk[RKorder[i]] = randomico(0,1); // x.vec[i].rk + (1.0/norm) * h * -1 * v[i] * h;
-            }
-
-            // printf(" | rk[%d]: %lf",RKorder[i], x.vec[RKorder[i]].rk);
-
-            // x.ofv = Decoder(x);
-            // if (x.ofv < xBest.ofv)
-            //     xBest = x;
-            // else
-            //     x = xBest;
-        // }
-    }
-    // getchar();
-    
-    v.clear();
-    return xBest;
-}
-
-/************************************************************************************
- Method: GridSearch
- Description: Generates a neighborhood and determines at which points in the neighbor-
- hood, if any, the objective function improves. If an improving point is found, it is 
- made the current point and the local search continues from the new solution.
-*************************************************************************************/
-void GridSearch(TSol &x, float h) //, float theta
-{
-    int numGridPoints = 20; //floor(n *  (1.0/h));
-    int numExaminedPoints = 0;
-
-    // set the best solution found as current solution x
-    TSol xBest = x;
-    // theta = 1.0; 
-
-    while (numExaminedPoints < numGridPoints) 
-    {   
-        numExaminedPoints++;
-
-        // create a neighbor solution in the h-Neighborhood
-        TSol y = hNeighborhood(xBest, h); //, theta
-        
-        // decoder
-        y.ofv = Decoder(y);
-
-        // printf("\n%lf \t %lf", xBest.ofv, y.ofv);
-
-        if (y.ofv < xBest.ofv){
-            xBest = y;
-            // numExaminedPoints = 0;
-        }
-    }
-
-    // retornar a melhor solucao
-    x = xBest;
 }
 
 /************************************************************************************
@@ -535,7 +435,7 @@ void InvertLS(TSol &s)
 
     TSol sBest = s;
     for(int i = 0; i < n; i++) {
-        // invert the random-key value
+        // mirror the random-key value
         if (s.rk[RKorder[i]] > 0.00001)
             s.rk[RKorder[i]] = 1.0 - s.rk[RKorder[i]];
         else
@@ -583,31 +483,6 @@ void FareyLS(TSol &s)
     }
 }
 
-/************************************************************************************
- Method: 2-Opt LS
- Description: 2-Opt local search
-*************************************************************************************/
-void TwoOptLS(TSol &s)
-{
-    TSol sBest = s;
-
-    for(int i = 0; i < n-2; i++) {
-        for(int j = i+2; j < n; j++) {        
-            // invert sequence between i and j
-            std::reverse(s.rk.begin()+i,s.rk.begin()+j);
-
-            s.ofv = Decoder(s);
-
-            if (s.ofv < sBest.ofv){
-                sBest = s;
-                // return;
-            }
-            else{
-                s = sBest;
-            }
-        }
-    }
-}
 
 /************************************************************************************
  Method: RVND
@@ -660,14 +535,6 @@ void RVND(TSol &s)
 
             case 4: 
                 NelderMeadSearch(s); 
-                break;
-
-            case 5: 
-                TwoOptLS(s);
-                break;
-
-            case 6:
-                GridSearch(s, randomico(0.00098, 0.12500));
                 break;
 
             default:
