@@ -27,7 +27,7 @@ void updateBestSolution(TSol s, int mh);
 
 /************************************************************************************
  Method: CreateInitialSolutions
- Description: Create a initial random solution
+ Description: Create an initial random solution
 *************************************************************************************/
 static void CreateInitialSolutions(TSol &s);
 
@@ -48,23 +48,6 @@ static void CretePoolSolutions();
  Description: update the pool with different solutions
 *************************************************************************************/
 static void UpdatePoolSolutions(TSol s, int mh);
-
-/************************************************************************************
- Method: RandomSelectElement
- Description: Consider the set of points in S that are integer steps (of size h) away 
- from x. Define the projection of the points in S onto the hyper-sphere centered at x  
- of radius h. The h-neighborhood of the point x is defined as the set of points in Bh.
- The algorithm randomly selects points in Bh, one at a time. 
-*************************************************************************************/
-static TSol hNeighborhood(TSol y, float h);
-
-/************************************************************************************
- Method: GridSearch
- Description: Generates a neighborhood and determines at which points in the neighbor-
- hood, if any, the objective function improves. If an improving point is found, it is 
- made the current point and the local search continues from the new solution.
-*************************************************************************************/
-static void GridSearch(TSol &x, float h); 
 
 /************************************************************************************
  Method: NelderMeadSearch
