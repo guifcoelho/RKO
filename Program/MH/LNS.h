@@ -7,8 +7,6 @@
 *************************************************************************************/
 void fareySequence(int num, std::vector<double> &F) {
     int a = 0, b = 1, c = 1, d = num;
-    // printf("Farey Sequence of order %d:\n", num);
-    // printf("%.4lf ", (double)a/b);
     F.push_back((double)a/b);
 
     while (c <= num) {
@@ -19,7 +17,6 @@ void fareySequence(int num, std::vector<double> &F) {
         c = k * c - temp_a;
         d = k * d - temp_b;
         if (a != b){
-            // printf("%.4lf ", (double)a/b);
             F.push_back((double)a/b);
         }
         else{
@@ -108,12 +105,9 @@ void LNS(int method, int control)
                         OFVbest = sLine.ofv;
                         rkBest = sLine.rk[pos];
                     }
-
-                    // if (sLine.ofv < sLineBest.ofv)
-                    //     sLineBest = sLine;
                 }
 
-                // continuar a busca a partir do melhor valor de random key encontrado para a rk pos
+                //continue searching from the best random key value found for rk pos
                 sLine.ofv = OFVbest;
                 sLine.rk[pos] = rkBest;
             }
@@ -154,11 +148,11 @@ void LNS(int method, int control)
 
             T = T * alphaLNS;
 
-            // terminate the evolutionary process in MAXTIME
+            // terminate the search process in MAXTIME
             clock_gettime(CLOCK_MONOTONIC, &TendMH);
             currentTime = (TendMH.tv_sec - TstartMH.tv_sec) + (TendMH.tv_nsec - TstartMH.tv_nsec) / 1e9;
 
-        } //Fim-T
+        } //End-T
 
         // reanneling
         reanneling = 1;
