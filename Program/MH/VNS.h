@@ -90,12 +90,6 @@ void VNS(int method, int control)
             {
                 // next neighborhood structure
                 k++; 
-
-                // metropolis criterion
-                // if (randomico(0,1) < (exp(-(sBestLine.ofv - s.ofv)/(1000 - 1000*(currentTime / MAXTIME)))) )
-                // {
-                //     s = sBestLine;
-                // } 
             }
 
             // if (debug && method == 4) printf("\nIter: %d \t s'Best: %lf \t sBest: %lf", Iter, sBestLine.ofv, sBest.ofv);
