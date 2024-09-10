@@ -26,7 +26,6 @@
 #include "GlobalFunctions.h"
 #include "Output.h"
 #include "../Problem/Problem.h"
-#include "../MH/IPR.h"
 #include "../MH/Method.h"
 #include "../MH/BRKGA.h"
 #include "../MH/SA.h"
@@ -104,19 +103,7 @@ int main(int argc, char *argv[ ])
             // current random seed
             int RSEED = 0;        
 
-            // obtain a seed from Taillard seeds
-            // int i1 = run+1;
-            // i1 = i1 % 400;
-            // FILE *arq = fopen ("../Instances/Seeds_Taillard.txt","r");
-            // if ( arq != NULL ) for (int i = 0; i <= i1; ++i) {
-            //     if (fscanf(arq, "%d", &RSEED) != 1) {
-            //         printf("Error reading data from seed file.\n");
-            //     }
-            // }
-            // else printf ( "ERROR: Unable to open file for reading.\n" );
-            // fclose (arq);
-
-            // obatin a seed of the clock
+            // obtain a seed of the clock
             RSEED = std::chrono::steady_clock::now().time_since_epoch().count();
 
             // set new seed
@@ -283,7 +270,6 @@ int main(int argc, char *argv[ ])
         else
         {
             WriteSolutionScreen(nameMH, sBest, n, timeBest, timeTotal, instance);
-            // sBest.ofv = CalculateFitness(sBest,1);
         }
 
         // free memory with problem data
