@@ -12,15 +12,11 @@ static void LineSearch(TSol s, float h, int i, double &bestZ, double &bestF)
 {
     std::vector<double> rk;
 
-    // encontrar a melhor solucao na linha
+    // find the best solution in line
     bestZ = 0;
     bestF = INFINITY;
 
-    // encontrar a melhor solucao na linha (partindo do ponto corrente)
-    // bestZ = s.vec[i].rk;
-    // bestF = s.ofv;
-
-    // gerar k como sendo as possiveis random keys do gene i, k = rk_i * tau | tau = {0, 1, -1, 2, -2, ...}
+    // generate k as possible random keys of position i, k = rk_i * tau | tau = {0, 1, -1, 2, -2, ...}
     double tau = 0;
     rk.push_back(s.rk[i] + tau * h);
     for (int j=0; j<(int)(1.0/h)+1; j+=2){
@@ -40,10 +36,10 @@ static void LineSearch(TSol s, float h, int i, double &bestZ, double &bestF)
     if (q > (int)rk.size())
         q = rk.size();
 
-    // escolher um subconjunto com q rks para calcular o decoder
+    // choose the subset with q rks to calculate the decoder
     std::shuffle(rk.begin(), rk.end(), std::mt19937(std::random_device()()));
 
-    // calcular a qualidade da solucao s com a rk j
+    // decoder solution s with rk j
     for (int j=0; j<q; j++)
     {  
         if (stop_execution.load()) return;      
@@ -76,32 +72,32 @@ static void ConstrutiveGreedyRandomized(TSol &s, float h, float alpha)
     // um destes valores e calcula o decoder (esta será a saída do line search). Com a lista de novas random keys geradas, construimos a RCL 
     // e selecionamos um valor aleatoriamente entre os melhores, fixando esta random key.
 
-    std::vector<int> UnFixed(n);                // armazena as random-keys ainda nao fixadas
-    std::vector<int> chosenRK;                  // armazena as random-keys que serao pesquisadas no line search
-    std::vector<int> RCL;                       // armazena as melhores solucoes candidatas
-    std::vector<double> z(n);                   // armazena o melhor valor da random-key i
-    std::vector<double> g(n,INFINITY);          // armazena o valor da fo com a random-key z_i
+    std::vector<int> UnFixed(n);                // store random-keys not fixed
+    std::vector<int> chosenRK;                  // store random-keys for the line search
+    std::vector<int> RCL;                       // store the best candidate solutions
+    std::vector<double> z(n);                   // store the best value of random-key i
+    std::vector<double> g(n,INFINITY);          // store the value of the ofv for the solution s with random-key z_i
 
     double min, max;
     double betaMin = 0.5, 
            betaMax = 0.8;
 
-    // inicializar os pontos do cromossomo que podem ser alterados
+    // initialize the points on the solution that can be changed
     for (int i = 0; i < n; i++) {
         UnFixed[i] = i;
     }
 
-    // construir uma solucao por meio de perturbacoes na solucao corrente e escolha de uma das melhores
+    // construct a solution by perturbing the current solution and choosing one of the best
     double intensity = randomico(betaMin, betaMax);
     
     // while (!UnFixed.empty())
     for (int j=0; j<n*intensity; j++)
     {
-        // criar uma lista de solucoes candidatas perturbando uma rk (ainda não 'fixada') da solucao corrente
+        // create a list of candidate solutions by perturbing a (not yet 'fixed') rk of the current solution
         min = INFINITY;
         max = -INFINITY;
 
-        // escolher o subconjunto de random keys que serao pesquisadas
+        // choose the subset of random keys that will be searched
         chosenRK.clear();
         int kMax = UnFixed.size() * 0.1;
         if (kMax < 2) 
@@ -136,7 +132,7 @@ static void ConstrutiveGreedyRandomized(TSol &s, float h, float alpha)
                 max = g[i];
         }
 
-        // criar a RCL
+        // create RCL
         RCL.clear();
         double threshold = min + alpha * (max - min);
 
@@ -148,17 +144,16 @@ static void ConstrutiveGreedyRandomized(TSol &s, float h, float alpha)
             }
         }
 
-        // selecionar aleatoriamente um dos melhores candidatos para continuar a construcao
+        // randomly select one of the best candidates to continue construction
         if (!RCL.empty()){
             int x = irandomico(0, (int)(RCL.size())-1);
-            int kCurrent = RCL[x];  // indice da random key que sera fixado
+            int kCurrent = RCL[x];  // index of the random key that will be fixed
             
-            // atualizar a solucao corrente
+            // update current solution
             s.rk[kCurrent] = z[kCurrent];
             s.ofv = g[kCurrent];
-            // printf("\tFoViz %d = %lf (%d, %lf)\n", j, s.ofv, k, z[k]);
 
-            // retirar a rk k do conjunto UnFixed
+            // remove rk k from the set UnFixed
             for (int i=0; i<(int)UnFixed.size(); i++)
             {
                 if (UnFixed[i] == kCurrent) 
