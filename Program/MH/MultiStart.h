@@ -38,7 +38,7 @@ void MultiStart(int method)
 
         IterT++;
 
-        // terminate the evolutionary process in MAXTIME
+        // terminate the search process in MAXTIME
         clock_gettime(CLOCK_MONOTONIC, &TendMH);
         currentTime = (TendMH.tv_sec - TstartMH.tv_sec) + (TendMH.tv_nsec - TstartMH.tv_nsec) / 1e9;
     }
