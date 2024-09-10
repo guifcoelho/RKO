@@ -52,8 +52,6 @@ void ILS(int method, int control)
         if (control == 0){
             betaMin = randomico(0.01, 0.05);
             betaMax = randomico(0.10, 0.20);
-            // betaMin = 0.05;
-            // betaMax = 0.20;
         }
     
         // new iteration of the ILS
@@ -77,14 +75,6 @@ void ILS(int method, int control)
             // update the pool of solutions
             UpdatePoolSolutions(sBest, method);
         }
-        // else
-        // {
-        //     // metropolis criterion
-        //     if (randomico(0,1) < (exp(-(sBestLine.ofv - sBest.ofv)/(1000 - 1000*(currentTime / MAXTIME)))) )
-        //     {
-        //         sBest = sBestLine;
-        //     } 
-        // }
 
         //aplicar history
         if (Iter - IterImprov > 1000)   //1000 iteracoes sem melhora
