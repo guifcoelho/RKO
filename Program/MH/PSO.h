@@ -110,13 +110,7 @@ void PSO(int method, int control)
 
             // fitness
             X[i].ofv = Decoder(X[i]);
-
-            // // local search
-            // if (randomico(0,1)<0.98)
-            //     NelderMeadSearch(X[i]);
-            // else
-            //     RVND(X[i]);
-
+         
             // set the best ofv found in this generation
             if (X[i].ofv < bestOFcurrent){
                 bestOFcurrent = X[i].ofv;
@@ -138,10 +132,10 @@ void PSO(int method, int control)
 
         // local search
         double oldGbest = Gbest.ofv;
-        int escolhido = irandomico(0,tamPop-1);
-        RVND(X[escolhido]);
-        if (X[escolhido].ofv < Gbest.ofv){
-            Gbest = X[escolhido];
+        int pos = irandomico(0,tamPop-1);
+        RVND(X[pos]);
+        if (X[pos].ofv < Gbest.ofv){
+            Gbest = X[pos];
             bestGeneration = numGenerations;    
         }
 
