@@ -55,10 +55,10 @@ static void PromisingLP(int p, double pe, std::vector <TSol> &Pop);
 void BRKGA_CS(int method, int control)
 {
     // BRKGA parameters
-    int p = 1597;          	                       // size of population
-    double pe = 0.20;              	               // fraction of population to be the elite-set
-    double pm = 0.03;          	                   // fraction of population to be replaced by mutants
-    double rhoe = 0.70;             	           // probability that offspring inherit an allele from elite parent
+    int p = 1597;          	                    // size of population
+    double pe = 0.20;              	            // fraction of population to be the elite-set
+    double pm = 0.03;          	                    // fraction of population to be replaced by mutants
+    double rhoe = 0.70;             	            // probability that offspring inherit an allele from elite parent
 
     // BRKGA variables
     std::vector <TSol> Pop;                         // current population
@@ -188,7 +188,7 @@ void BRKGA_CS(int method, int control)
             for (unsigned int i=0; i < promisingSol.size(); i++){
                 if (stop_execution.load()) return;      
 
-                // local search not influence the evolutionary process
+                // local search
                 if (i < 1)
                    RVND(Pop[promisingSol[i]]);
                 else
@@ -358,7 +358,7 @@ static void IC(int p, double pe, std::vector <TSol> &Pop)
 
 static void LP(std::vector<std::vector<std::pair<int, double> > > listaArestas, std::vector <TSol> &Pop)
 {
-    int nk = listaArestas.size();
+        int nk = listaArestas.size();
 
 	// Create vector with visit order
 	std::vector<int> ordemVisita(nk);
@@ -376,60 +376,60 @@ static void LP(std::vector<std::vector<std::pair<int, double> > > listaArestas, 
 
 	int movimentos = 1;
 	while (movimentos) 
-    {
+        {
 		movimentos = 0;
 		shuffle(ordemVisita.begin(), ordemVisita.end(),std::mt19937(std::random_device()()));
-        for (std::vector<int>::size_type idVertice=0; idVertice <ordemVisita.size(); idVertice++)
-        {
-			// Calculate the weigth of the labels
-			totalLabels.clear();
-            for (std::vector<std::pair<int, double> >::iterator itVizinho = listaArestas[idVertice].begin();
-                itVizinho != listaArestas[idVertice].end(); ++itVizinho) {
-                int idVizinho = itVizinho->first;
-                labelVizinho = Pop[idVizinho].label;
-                it = totalLabels.find(labelVizinho);
-                if (it != totalLabels.end()) {
-                    it->second += itVizinho->second;
-                } else {
-                    totalLabels[labelVizinho] = itVizinho->second;
-                }
-            }
+	        for (std::vector<int>::size_type idVertice=0; idVertice <ordemVisita.size(); idVertice++)
+	        {
+		    // Calculate the weigth of the labels
+		    totalLabels.clear();
+	            for (std::vector<std::pair<int, double> >::iterator itVizinho = listaArestas[idVertice].begin(); itVizinho != listaArestas[idVertice].end(); ++itVizinho) 
+		    {
+	                int idVizinho = itVizinho->first;
+	                labelVizinho = Pop[idVizinho].label;
+	                it = totalLabels.find(labelVizinho);
+	                if (it != totalLabels.end()) {
+	                    it->second += itVizinho->second;
+	                } 
+			else {
+	                    totalLabels[labelVizinho] = itVizinho->second;
+	                }
+	            }
 
-			// Best label is itself initially
-			melhorLabel = Pop[idVertice].label;
-			melhorPeso = std::numeric_limits<double>::min();
-            for (std::map<int, double>::iterator itTotais = totalLabels.begin(); itTotais != totalLabels.end(); ++itTotais) {
-                if (itTotais->second > melhorPeso) {
-                    melhorLabel = itTotais->first;
-                    melhorPeso = itTotais->second;
-                }
-            }
+		    // Best label is itself initially
+		    melhorLabel = Pop[idVertice].label;
+		    melhorPeso = std::numeric_limits<double>::min();
+	            for (std::map<int, double>::iterator itTotais = totalLabels.begin(); itTotais != totalLabels.end(); ++itTotais) {
+	                if (itTotais->second > melhorPeso) {
+	                    melhorLabel = itTotais->first;
+	                    melhorPeso = itTotais->second;
+	                }
+	            }
 
-			if (melhorLabel != Pop[idVertice].label) {
-				Pop[idVertice].label = melhorLabel;
-				movimentos = 1;
-			}
+		    if (melhorLabel != Pop[idVertice].label) {
+			Pop[idVertice].label = melhorLabel;
+			movimentos = 1;
+		    }
 		}
 		iteracao++;
 	}
-
-    ordemVisita.clear();
+	ordemVisita.clear();
 }
 
 static void PromisingLP(int p, double pe, std::vector <TSol> &Pop)
 {
-    int Tpe = (int)p*pe;
-    std::vector <int> grupos;
+	int Tpe = (int)p*pe;
+	std::vector <int> grupos;
 	int tamanhoGrupos = 0;
-
+	
 	// initialize promisings solutions
 	for (int i = 0; i < Tpe; i++)
 		Pop[i].promising = 0;
-
+	
 	// save labels defined by LP in groups
 	int achei;
 
-    for (int i = 0; i < Tpe; i++)
+	for (int i = 0; i < Tpe; i++)
 	{
 		achei = 0;
 		for (unsigned int j = 0; j < grupos.size(); j++)
@@ -443,7 +443,7 @@ static void PromisingLP(int p, double pe, std::vector <TSol> &Pop)
 			grupos.push_back(Pop[i].label);
 		}
 	}
-
+	
 	// find the best solution in the group (with flag = 0)
 	for (unsigned int j = 0; j < grupos.size(); j++)
 	{
@@ -457,19 +457,19 @@ static void PromisingLP(int p, double pe, std::vector <TSol> &Pop)
 				// find the best solution of the group
 				if (local == -1)
 					local = i;
-
+	
 				// we not apply local search in this solution yet
-                if (Pop[i].ofv < menorFO && Pop[i].flag == 0) 
+				if (Pop[i].ofv < menorFO && Pop[i].flag == 0) 
 				{
 					menorFO = Pop[i].ofv;
 					localMenor = i;
 				}
 			}
 		}
-
+	
 		if (localMenor == -1)
 			localMenor = local;
-
+	
 		if (Pop[localMenor].label != -1)
 			Pop[localMenor].promising = 1;
 	}
