@@ -221,24 +221,6 @@ int main(int argc, char *argv[ ])
                 MultiStart(method);
             }
 
-            // run the path-relinking
-            if (0){  
-                for (int i=0; i<(int)pool.size(); i++)
-                {
-                    TSol solPR = pool[0];
-                    TSol bestPR = solPR;
-
-                    int k1, k2;
-                    do {
-                        k1 = irandomico(0,pool.size()-1);
-                        k2 = irandomico(0,pool.size()-1);
-                    }
-                    while (k1 == k2);
-
-                    solPR = IPR(pool[k1], pool[k2], 1.0, 1);
-                }
-            }
-
             clock_gettime(CLOCK_MONOTONIC, &Tend);
 
             // store the best solution found in MAXRUNS
