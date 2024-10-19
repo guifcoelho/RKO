@@ -25,7 +25,6 @@
 #include "GlobalVariables.h" 
 #include "GlobalFunctions.h"
 #include "../Problem/Problem.h"
-#include "../MH/IPR.h"
 #include "../MH/Method.h"
 #include "../MH/QLearning.h"
 #include "../MH/BRKGA.h"
