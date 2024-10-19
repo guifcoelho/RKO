@@ -1,7 +1,7 @@
 
 # RKO - Random-key optimizer 
 
-This is an implementation of the RKO to solve combinatorial optimization problems.
+This is an implementation of the RKO to solve combinatorial optimization problems. The code was prepared for Unix systems.
 
 This algorithm's C++ code has been designed to be easy to reuse. Users can only implement specific functions (read and decoder). 
 
@@ -19,7 +19,7 @@ Available here in technical report form.
 
 ## Scope
 
-This code has been designed to solve the Traveling Salesman Problem (TSP). To solve other problems, users only need to configure the Problem.cpp file.
+This code has been designed to solve the Traveling Salesman Problem (TSP). To solve other problems, users only need to configure the Problem.h file.
 
 
 ## Running the algorithm
