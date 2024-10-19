@@ -64,3 +64,9 @@ The code structure is documented in [1] and organized in the following manner:
 - Maximum number of runs
 
 Users need to create a folder named "Instances/ProblemName", where the instances must be; users also need to create a folder named "Results", where the results files are written.
+
+## File Parameters:
+
+Users can use two parameter settings: parameter tuning (option 0) and parameter control (option 1). 
+ - For parameter tuning, users must inform the static configuration of each parameter in the file ParametersOffline.txt.
+ - For parameter control, users must inform a set of possible values for each parameter in the file ParametersOnline.txt. We use the Q-Learning method to learn the best configuration for each metaheuristic during the search process.
