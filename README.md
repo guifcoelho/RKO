@@ -27,7 +27,7 @@ This code has been designed to solve the Traveling Salesman Problem (TSP). To so
 * Enter the Program directory: `cd Program`
 * Run the make command: `make rebuild`
 * Run the RKO: `./runTest ../Instances/testScenario.csv K T D`, where k is the number of metaheuristics used to solve the problem, T is the tuning method (0 is offline and 1 is online), and D is the debug mode (1 to print information in the screen and 0 to save information in file)
-
+* In Windows: runTest.exe ../Instances/testScenario.csv K T D
 * Available metaheuristics:
 "BRKGA"      = 0,
 "SA"         = 1,
