@@ -182,9 +182,8 @@ void GRASP(int method, int control)
     float currentTime = 0;                      // computational time of the search process
     int improv = 0;                             // improvement flag
     
-    struct timespec TstartMH, TendMH;           // computational time (unix systems)
-    clock_gettime(CLOCK_MONOTONIC, &TstartMH);
-    clock_gettime(CLOCK_MONOTONIC, &TendMH);
+    double start_timeMH = get_time_in_seconds();// start computational time
+    double end_timeMH = get_time_in_seconds();  // end computational time
 
     float alphaGrasp = 0.1;                     // greedy rate
     float h;                                    // grid dense
@@ -337,8 +336,8 @@ void GRASP(int method, int control)
             // if (debug && method == 2) printf("\nIter: %d \t s': %lf \t s'best: %lf \t sBest: %lf", iter, sLine.ofv, sLineBest.ofv, sBest.ofv);
 
             // terminate the evolutionary process in MAXTIME
-            clock_gettime(CLOCK_MONOTONIC, &TendMH);
-            currentTime = (TendMH.tv_sec - TstartMH.tv_sec) + (TendMH.tv_nsec - TstartMH.tv_nsec) / 1e9;
+            end_timeMH = get_time_in_seconds();
+            currentTime = end_timeMH - start_timeMH;
         } 
 
         // Q-Learning 
@@ -377,8 +376,8 @@ void GRASP(int method, int control)
         s.ofv = Decoder(s);
 
         // terminate the search process in MAXTIME
-        clock_gettime(CLOCK_MONOTONIC, &TendMH);
-        currentTime = (TendMH.tv_sec - TstartMH.tv_sec) + (TendMH.tv_nsec - TstartMH.tv_nsec) / 1e9;
+        end_timeMH = get_time_in_seconds();
+        currentTime = end_timeMH - start_timeMH;
     }
 
     // print policy

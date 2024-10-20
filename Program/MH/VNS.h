@@ -22,9 +22,8 @@ void VNS(int method, int control)
     
     float currentTime = 0;              // computational time of the search process
 
-    struct timespec TstartMH, TendMH;   // computational time (unix systems)
-    clock_gettime(CLOCK_MONOTONIC, &TstartMH);
-    clock_gettime(CLOCK_MONOTONIC, &TendMH);
+    double start_timeMH = get_time_in_seconds();    // start computational time
+    double end_timeMH = get_time_in_seconds();      // end computational time
 
     // Q-Learning parameters
     std::vector<TState> S;                      // finite state space
@@ -175,8 +174,8 @@ void VNS(int method, int control)
             }
 
             // terminate the search process in MAXTIME
-            clock_gettime(CLOCK_MONOTONIC, &TendMH);
-            currentTime = (TendMH.tv_sec - TstartMH.tv_sec) + (TendMH.tv_nsec - TstartMH.tv_nsec) / 1e9;
+            end_timeMH = get_time_in_seconds();
+            currentTime = end_timeMH - start_timeMH;
         }
 
         // Q-Learning 

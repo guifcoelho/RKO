@@ -26,13 +26,30 @@ int irandomico(int min, int max)
 }
 
 /************************************************************************************
+ Method: get_time_in_seconds
+ Description: measure time on Linux/macOS and Windows
+*************************************************************************************/
+double get_time_in_seconds() {
+    #if defined(_WIN32) || defined(_WIN64)
+        LARGE_INTEGER frequency, timeCur;
+        QueryPerformanceFrequency(&frequency);
+        QueryPerformanceCounter(&timeCur);
+        return static_cast<double>(timeCur.QuadPart) / frequency.QuadPart;
+    #else
+        struct timespec timeCur;
+        clock_gettime(CLOCK_MONOTONIC, &timeCur);
+        return timeCur.tv_sec + timeCur.tv_nsec / 1e9;
+    #endif
+}
+
+/************************************************************************************
  Method: TTT
  Description: Create the TTT file
 *************************************************************************************/
 void TTT(TSol s, int mh)
 {
     // TTT plot
-    if (s.ofv < 6.12)  // target = 6.092 /ORSP/fjspnostr/CASE_21.dat
+    if (s.ofv < 7542)  // target = 7542 TSP
     {
         char name[256]="../Results/TTT_";
         strcat(name,nameMH);
@@ -43,8 +60,7 @@ void TTT(TSol s, int mh)
             printf("Error opening the file %s.\n", "TTT.txt");
             return;
         }
-        float timeBest = (Tbest.tv_sec - Tstart.tv_sec) + (Tbest.tv_nsec - Tstart.tv_nsec) / 1e9;
-        fprintf(tttFile, "%lf\n", timeBest);
+        fprintf(tttFile, "%lf\n", best_time);
         fclose(tttFile);
         exit(1);
     }
@@ -88,8 +104,8 @@ void updateBestSolution(TSol s, int mh)
         // update best solution found
         bestSolution = s;
 
-        // update current time
-        clock_gettime(CLOCK_MONOTONIC, &Tbest);
+        // update best time
+        best_time = get_time_in_seconds();
 
         if (debug) {
             // get the current thread ID
