@@ -3,9 +3,13 @@
 #include <cstring>
 #include <ctime>
 #include <iostream>
+#if defined(_WIN32) || defined(_WIN64)  // Windows
+    #include <windows.h>
+#else  // Unix-like (Linux, macOS)
+    #include <time.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <vector>
 #include <string.h>
 #include <algorithm>
@@ -117,9 +121,9 @@ int main(int argc, char *argv[ ])
             printf("%d ", run+1);
             
             // computational times
-            clock_gettime(CLOCK_MONOTONIC, &Tstart);
-            clock_gettime(CLOCK_MONOTONIC, &Tend);
-            clock_gettime(CLOCK_MONOTONIC, &Tbest);
+            start_time = get_time_in_seconds();
+            best_time = get_time_in_seconds();
+            end_time = get_time_in_seconds();
 
             // free memory with problem data
             FreeMemoryProblem();
@@ -178,7 +182,7 @@ int main(int argc, char *argv[ ])
                 bestSolution = pool[0];
 
                 omp_set_num_threads(NUM_MH);
-                #pragma omp parallel private(RKorder, rng) shared(bestSolution, Tbest, stop_execution)
+                #pragma omp parallel private(RKorder, rng) shared(bestSolution, best_time, stop_execution)
                 {
                     #pragma omp for 
                     for (int i = 0; i < NUM_MH; ++i) { 
@@ -221,7 +225,8 @@ int main(int argc, char *argv[ ])
                 MultiStart(method);
             }
 
-            clock_gettime(CLOCK_MONOTONIC, &Tend);
+            // clock_gettime(CLOCK_MONOTONIC, &Tend);
+            end_time = get_time_in_seconds();
 
             // store the best solution found in MAXRUNS
             if (bestSolution.ofv < sBest.ofv)
@@ -236,8 +241,9 @@ int main(int argc, char *argv[ ])
             // fitness of each solution found in the runs
             ofvs.push_back(bestSolution.ofv);
 
-            timeBest += (Tbest.tv_sec - Tstart.tv_sec) + (Tbest.tv_nsec - Tstart.tv_nsec) / 1e9;
-            timeTotal += (Tend.tv_sec - Tstart.tv_sec) + (Tend.tv_nsec - Tstart.tv_nsec) / 1e9; 
+            // computational time
+            timeBest += best_time - start_time;
+            timeTotal += end_time - start_time;
         }
 
         // create a .csv file with average results

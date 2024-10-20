@@ -15,7 +15,7 @@ int MAXTIME = 1;                            // maximum runtime
 int MAXRUNS =  1;                           // maximum number of runs of the method
 
 // Run
-struct timespec Tstart, Tend, Tbest;        // computational time (unix systems)
+double start_time, end_time, best_time;     // computational times
 char nameTable[256];                        // name of the instance
 char nameMH[256];                           // name of the metaheuristic
 TSol bestSolution;                          // best solution found
