@@ -1,7 +1,7 @@
 
 # RKO - Random-key optimizer 
 
-This is an implementation of the RKO to solve combinatorial optimization problems. The code was prepared for Unix systems.
+This is an implementation of the RKO to solve combinatorial optimization problems. The code was prepared for Unix and Windows systems. However, the openMP paradigm needs to be installed.
 
 This algorithm's C++ code has been designed to be easy to reuse. Users can only implement specific functions (read and decoder). 
 
