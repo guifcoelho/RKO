@@ -116,9 +116,8 @@ void BRKGA(int method, int control)
     float currentTime = 0;                      // computational time of the search process
     int improv = 0;                             // improvement flag
 
-    struct timeval TstartMH, TendMH;            // computational time (unix systems)
-    gettimeofday(&TstartMH, NULL);
-    gettimeofday(&TendMH, NULL);
+    double start_timeMH = get_time_in_seconds();// start computational time
+    double end_timeMH = get_time_in_seconds();  // end computational time
 
     // Q-Learning parameters
     std::vector<TState> S;                      // finite state space
@@ -342,8 +341,8 @@ void BRKGA(int method, int control)
         // *********************************************************************
 
         // terminate the evolutionary process in MAXTIME
-        gettimeofday(&TendMH, NULL);
-        currentTime = ((TendMH.tv_sec  - TstartMH.tv_sec) * 1000000u + TendMH.tv_usec - TstartMH.tv_usec) / 1.e6; 
+        end_timeMH = get_time_in_seconds();
+        currentTime = end_timeMH - start_timeMH;
     }
 
     // free memory of BRKGA components
