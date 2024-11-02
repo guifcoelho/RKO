@@ -13,9 +13,9 @@ Here, we have the RKO version 1.0 code.
 When using this algorithm in academic studies, please refer to the following works:
 
 RKO version 1.0
-[1] REF (2024)
-RKO
-Available here in technical report form.
+[1] Chaves, A.A., Resende, M.G.C., Schuetz, M.J.A.,  Brubaker, J.K., Katzgraber, H.G., Arruda, E.F., Silva, R.M.A. 
+A Random-Key Optimizer for Combinatorial Optimization
+Available here in technical report form: https://mauricio.resende.info/doc/RKO_ver_2024-11-02.pdf
 
 ## Scope
 
