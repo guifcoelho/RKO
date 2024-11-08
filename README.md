@@ -15,9 +15,10 @@ When using this algorithm in academic studies, please refer to the following wor
 RKO version 1.0
 
 [1] Chaves, A.A., Resende, M.G.C., Schuetz, M.J.A.,  Brubaker, J.K., Katzgraber, H.G., Arruda, E.F., Silva, R.M.A. 
-A Random-Key Optimizer for Combinatorial Optimization. Submitted to Journal of Heuristics.
+A Random-Key Optimizer for Combinatorial Optimization. This paper wiil be submitted to the Journal of Heuristics.
 
-Available here in technical report form: https://mauricio.resende.info/doc/RKO_ver_2024-11-02.pdf
+Available here in technical report form: 
+https://doi.org/10.48550/arXiv.2411.04293
 
 ## Scope
 
