@@ -1,7 +1,7 @@
 // #include <sys/time.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <string.h>
 
 #if defined(_WIN32) || defined(_WIN64)  // Windows
@@ -13,19 +13,19 @@
 #include <cstring>
 #include <ctime>
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <utility>
-#include <numeric>
-#include <map>
-#include <limits>
+// #include <vector>
+// #include <algorithm>
+// #include <utility>
+// #include <numeric>
+// #include <map>
+// #include <limits>
 #include <random>
 #include <chrono>
 #include <iomanip>
-#include <sstream>
-#include <fstream>
+// #include <sstream>
+// #include <fstream>
 #include <omp.h>
-#include <atomic>
+// #include <atomic>
 #include <functional>
 
 #include "Main/Data.h"
@@ -49,12 +49,14 @@
 
 
 std::vector<double> solve(char nameScenario[256],
-                           int method,
-                           bool find_best_mh_params,
-                           char mh_params_file_path[255],
-                           bool _debug,
-                           int size,
-                           std::function<double(std::vector<double>)> decoder){
+                          int method,
+                          bool find_best_mh_params,
+                          char mh_params_file_path[255],
+                          bool _debug,
+                          int size,
+                          std::function<double(std::vector<double>)> decoder){
+
+
     _decoder = decoder;
     debug = _debug;
     strcpy(_mh_params_file_path, mh_params_file_path);
@@ -129,16 +131,17 @@ std::vector<double> solve(char nameScenario[256],
 
     // best solution found in this run
     bestSolution = pool[0];
+    return bestSolution.rk;
 
-    start_time = get_time_in_seconds();
+    // start_time = get_time_in_seconds();
 
-    // calls the metaheuristic [method] function
-    SA(method, find_best_mh_params);
+    // // calls the metaheuristic [method] function
+    // SA(method, find_best_mh_params);
 
-    end_time = get_time_in_seconds();
+    // end_time = get_time_in_seconds();
 
-    std::cout << std::endl;
-    std::cout << "Terminou" << std::endl;
+    // std::cout << std::endl;
+    // std::cout << "Terminou" << std::endl;
 
-    return pool[0].rk;
+    // return pool[0].rk;
 }

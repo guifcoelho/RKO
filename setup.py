@@ -4,7 +4,8 @@ from pybind11.setup_helpers import Pybind11Extension
 ext_modules = [
     Pybind11Extension(
         "rkopy",
-        ["Program/rkopy.cpp"]
+        ["Program/rkopy.cpp"],
+        extra_compile_args=["/openmp"]
     ),
 ]
 

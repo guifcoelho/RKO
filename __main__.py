@@ -17,3 +17,5 @@ if __name__ == '__main__':
     )
 
     print(best_sol)
+
+# print(rkopy.teste([3]))
