@@ -16,14 +16,14 @@ TARGET = $(TARGETDIR)/runTest$(EXE)
 debug: CCFLAGS += -g
 release: CCFLAGS += -march=native
 
-OBJS = $(TARGETDIR)/Main/main.o
+OBJS = $(TARGETDIR)/main.o
 
 # Rule to generate the final binary
 $(TARGET): $(OBJS)
 	$(CCC) $(CCFLAGS) -o $@ $(OBJS)
 
 # Compilation of each object file
-$(TARGETDIR)/Main/main.o: $(TARGETDIR)/Main/main.cpp
+$(TARGETDIR)/main.o: $(TARGETDIR)/main.cpp
 	$(CCC) $(CCFLAGS) -c $< -o $@
 
 # Rule for running tests
@@ -39,5 +39,5 @@ debug: clean
 	$(MAKE) $(TARGET) CCC=$(CCC)
 
 # Rule to recompile
-rebuild: 
+rebuild:
 	$(MAKE) debug

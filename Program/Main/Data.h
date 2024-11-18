@@ -9,7 +9,7 @@
 ************************************************************************************/
 struct TSol
 {
-    std::vector <double> rk;                // random-key vector
+    std::vector<double> rk;                // random-key vector
     double ofv;                             // objetive function value
     int label;                              // defines a community solution with a number
     int similar;                            // indicates if a solution is similar to other (0 no, 1 yes)
@@ -37,7 +37,7 @@ struct TQ
 struct TState
 {
     int label;                              // id of the state
-    std::vector<double> par;                // vector of parameters        
+    std::vector<double> par;                // vector of parameters
     double ci;                              // cost of state i
     int numN;                               // number of runs of state i
     std::vector<int> Ai;                    // vector of actions

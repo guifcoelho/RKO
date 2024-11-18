@@ -98,7 +98,7 @@ void STN(TSol s, int mh)
 *************************************************************************************/
 void updateBestSolution(TSol s, int mh)
 {
-    // save the best solution found 
+    // save the best solution found
     if (s.ofv < bestSolution.ofv)
     {
         // update best solution found
@@ -109,10 +109,10 @@ void updateBestSolution(TSol s, int mh)
 
         if (debug) {
             // get the current thread ID
-            int thread_id = omp_get_thread_num();   
+            int thread_id = omp_get_thread_num();
             printf("\nBest solution: %.2lf (MH: %d - Thread: %d)", s.ofv, mh, thread_id);
         }
-        
+
         // STN plot
         // STN(s, mh);
     }
@@ -153,7 +153,7 @@ void ShakeSolution(TSol &s, float betaMin, float betaMax)
     for(int k = 0; k < intensity; k++) {
         shaking_type = irandomico(1,4);
         int i = irandomico(0, n-1);
-        
+
         if(shaking_type == 1){
             // Change to random value
             s.rk[i] = randomico(0,1);
@@ -166,7 +166,7 @@ void ShakeSolution(TSol &s, float betaMin, float betaMax)
             else
                 s.rk[i] = 0.9999;
         }
-        else 
+        else
         if (shaking_type == 3){
             // Swap two random positions
             int j = irandomico(0, n - 1);
@@ -189,13 +189,13 @@ void ShakeSolution(TSol &s, float betaMin, float betaMax)
  Description: uniform crossover
 *************************************************************************************/
 TSol Blending(TSol &s1, TSol &s2, double factor)
-{   
+{
     TSol s;
 
     // create a new solution
     s.rk.resize(n);
 
-    // Mate: including decoder gene in the n-th rk 
+    // Mate: including decoder gene in the n-th rk
     for(int j = 0; j < n; j++)
     {
         // mutation
@@ -227,8 +227,8 @@ TSol Blending(TSol &s1, TSol &s2, double factor)
 
 /************************************************************************************
  Method: NelderMeadSearch
- Description: The Nelder–Mead method is a numerical method used to find the minimum 
- of an objective function in a multidimensional space. It is a direct search method 
+ Description: The Nelder–Mead method is a numerical method used to find the minimum
+ of an objective function in a multidimensional space. It is a direct search method
  based on function comparison.
 *************************************************************************************/
 void NelderMeadSearch(TSol &x1)
@@ -275,90 +275,95 @@ void NelderMeadSearch(TSol &x1)
         x2 = x3;
         x3 = temp;
     }
-    
+
     // compute the simplex centroid
     x0 = Blending(x1, x2, 1);
-    x0.ofv = Decoder(x0);
+
+    x0.ofv = _decoder(x0.rk);
     if (x0.ofv < xBest.ofv) xBest = x0;
 
-    iter_count++; 
+    iter_count++;
 
     // continue minimization until stop conditions are met
     int maxIter = n*exp(-2);
-    while (iter_count <= maxIter) 
+    while (iter_count <= maxIter)
     {
         int shrink = 0;
 
         // reflection point (r)
         x_r = Blending(x0, x3, -1);
-        x_r.ofv = Decoder(x_r);
+
+        x_r.ofv = _decoder(x_r.rk);
         if (x_r.ofv < xBest.ofv) xBest = x_r;
         eval_count++;
 
         // point_r is better than the x1
-        if (x_r.ofv < x1.ofv) 
+        if (x_r.ofv < x1.ofv)
         {
             // expansion point (e)
             x_e = Blending(x_r, x0, -1);
-            x_e.ofv = Decoder(x_e);
+
+            x_e.ofv = _decoder(x_e.rk);
             if (x_e.ofv < xBest.ofv) xBest = x_e;
             eval_count++;
 
-            if (x_e.ofv < x_r.ofv) 
+            if (x_e.ofv < x_r.ofv)
             {
                 // expand
                 x3 = x_e;
-            } 
-            else 
+            }
+            else
             {
                 // reflect
                 x3 = x_r;
             }
-        } 
+        }
         // x_r is NOT better than the x1
-        else 
-        {    
+        else
+        {
             // point_r is better than the second best solution
-            if (x_r.ofv < x2.ofv) 
+            if (x_r.ofv < x2.ofv)
             {
                 // reflect
                 x3 = x_r;
-            } 
-            else 
+            }
+            else
             {
                 // point_r is better than the worst solution
-                if (x_r.ofv < x3.ofv) 
+                if (x_r.ofv < x3.ofv)
                 {
                     // contraction point (c)
                     x_c = Blending(x_r, x0, 1);
-                    x_c.ofv = Decoder(x_c);
+
+                    x_c.ofv = _decoder(x_c.rk);
                     if (x_c.ofv < xBest.ofv) xBest = x_c;
                     eval_count++;
 
-                    if (x_c.ofv < x_r.ofv) 
+                    if (x_c.ofv < x_r.ofv)
                     {
                         // contract outside
                         x3 = x_c;
-                    } 
-                    else 
+                    }
+                    else
                     {
                         // shrink
                         shrink = 1;
                     }
-                } 
-                else 
+                }
+                else
                 {
                     // contraction point (c)
                     x_c = Blending(x0, x3, 1);
-                    x_c.ofv = Decoder(x_c);
+
+                    x_c.ofv = _decoder(x_c.rk);
                     if (x_c.ofv < xBest.ofv) xBest = x_c;
                     eval_count++;
 
-                    if (x_c.ofv < x3.ofv) 
+                    if (x_c.ofv < x3.ofv)
                     {
                         // contract inside
                         x3 = x_c;
-                    } 
+                    }
                     else {
                         // shrink
                         shrink = 1;
@@ -368,12 +373,13 @@ void NelderMeadSearch(TSol &x1)
         }
         if (shrink) {
             x2 = Blending(x1, x2, 1);
-            x2.ofv = Decoder(x2);
+
+            x2.ofv = _decoder(x2.rk);
             if (x2.ofv < xBest.ofv) xBest = x2;
             eval_count++;
 
             x3 = Blending(x1, x3, 1);
-            x3.ofv = Decoder(x3);
+            x3.ofv = _decoder(x3.rk);
             if (x3.ofv < xBest.ofv) xBest = x3;
             eval_count++;
         }
@@ -399,7 +405,8 @@ void NelderMeadSearch(TSol &x1)
 
         // compute the simplex centroid
         x0 = Blending(x1, x2, 1);
-        x0.ofv = Decoder(x0);
+
+        x0.ofv = _decoder(x0.rk);
         if (x0.ofv < xBest.ofv) xBest = x0;
 
         iter_count++;
@@ -417,16 +424,16 @@ void SwapLS(TSol &s)
 {
     // // define a random order for the neighors
     std::shuffle(RKorder.begin(), RKorder.end(),rng);
-    
+
     TSol sBest = s;
     for(int i = 0; i < n-1; i++) {
-        for(int j = i+1; j < n; j++) {        
+        for(int j = i+1; j < n; j++) {
             // Swap positions i and j
             double temp = s.rk[RKorder[i]];
             s.rk[RKorder[i]] = s.rk[RKorder[j]];
             s.rk[RKorder[j]] = temp;
 
-            s.ofv = Decoder(s);
+            s.ofv = _decoder(s.rk);
 
             if (s.ofv < sBest.ofv){
                 sBest = s;
@@ -456,7 +463,7 @@ void InvertLS(TSol &s)
         else
             s.rk[RKorder[i]] = 0.99999;
 
-        s.ofv = Decoder(s);
+        s.ofv = _decoder(s.rk);
 
         if (s.ofv < sBest.ofv){
             sBest = s;
@@ -477,7 +484,7 @@ void FareyLS(TSol &s)
     // define a random order for the neighors
     std::shuffle (RKorder.begin(), RKorder.end(),rng);
 
-    std::vector<double> F = {0.00, 0.142857, 0.166667, 0.20, 0.25, 0.285714, 0.333333, 0.40, 0.428571, 0.50, 
+    std::vector<double> F = {0.00, 0.142857, 0.166667, 0.20, 0.25, 0.285714, 0.333333, 0.40, 0.428571, 0.50,
                              0.571429, 0.60, 0.666667, 0.714286, 0.75, 0.80, 0.833333, 0.857143, 1.0};
     TSol sBest = s;
     for(int i = 0; i < n; i++) {
@@ -485,7 +492,7 @@ void FareyLS(TSol &s)
             // generate a random value between two intervals of the Farey sequence
             s.rk[RKorder[i]] = randomico(F[j], F[j+1]);
 
-            s.ofv = Decoder(s);
+            s.ofv = _decoder(s.rk);
 
             if (s.ofv < sBest.ofv){
                 sBest = s;
@@ -523,11 +530,11 @@ void FibonacciLS(TSol &s)
         for (int j=0; j<(int)Fibonacci.size(); j++){
             // generate a random value between actual value and fibonacci j
             double newrk = randomico(rk, rk+Fibonacci[j]);
-            
+
             if (newrk < 1.0)
             {
                 s.rk[RKorder[i]] = newrk;
-                s.ofv = Decoder(s);
+                s.ofv = _decoder(s.rk);
 
                 if (s.ofv < sBest.ofv){
                     sBest = s;
@@ -542,7 +549,7 @@ void FibonacciLS(TSol &s)
             if (newrk >= 0)
             {
                 s.rk[RKorder[i]] = newrk;
-                s.ofv = Decoder(s);
+                s.ofv = _decoder(s.rk);
 
                 if (s.ofv < sBest.ofv){
                     sBest = s;
@@ -565,11 +572,11 @@ void TwoOptLS(TSol &s)
     TSol sBest = s;
 
     for(int i = 0; i < n-2; i++) {
-        for(int j = i+2; j < n; j++) {        
+        for(int j = i+2; j < n; j++) {
             // invert sequence between i and j
             std::reverse(s.rk.begin()+i,s.rk.begin()+j);
 
-            s.ofv = Decoder(s);
+            s.ofv = _decoder(s.rk);
 
             if (s.ofv < sBest.ofv){
                 sBest = s;
@@ -597,7 +604,7 @@ void RVND(TSol &s)
     // predefined number of neighborhood moves
     std::vector <int> NSL;
     std::vector <int> NSLAux;
-    
+
     for (int i=1; i<=numLS; i++)
     {
         NSL.push_back(i);
@@ -606,10 +613,10 @@ void RVND(TSol &s)
 
     int numIter = 0;
     // while (!NSL.empty())
-    while (!NSL.empty() && numIter < numLS*5) 
-    // while (!NSL.empty() && numIter < n/5) 
+    while (!NSL.empty() && numIter < numLS*5)
+    // while (!NSL.empty() && numIter < n/5)
     {
-        if (stop_execution.load()) return;      
+        if (stop_execution.load()) return;
 
         // current objective function
         double foCurrent = s.ofv;
@@ -621,23 +628,23 @@ void RVND(TSol &s)
 
         switch (k)
         {
-            case 1: 
+            case 1:
                 SwapLS(s);
                 break;
 
-            case 2: 
+            case 2:
                 InvertLS(s);
                 break;
 
-            case 3: 
-                NelderMeadSearch(s); 
-                break;
-                
-            case 4: 
-                FareyLS(s); 
+            case 3:
+                NelderMeadSearch(s);
                 break;
 
-            case 5: 
+            case 4:
+                FareyLS(s);
+                break;
+
+            case 5:
                 FibonacciLS(s);
                 break;
 
@@ -662,20 +669,21 @@ void RVND(TSol &s)
  Method: CretePoolSolutions
  Description: create a pool of solutions with different solutions
 *************************************************************************************/
-void CretePoolSolutions()
+void CreatePoolSolutions()
 {
     pool.resize(sizePool);
     for (int i = 0; i < sizePool; i++){
         CreateInitialSolutions(pool[i]);
-        pool[i].ofv = Decoder(pool[i]);
+
+        pool[i].ofv = _decoder(pool[i].rk);
     }
-    
+
     // apply local search in the pool solutions
     for (int i = 0; i < sizePool; i++){
         FareyLS(pool[i]);
 
         // update the best solution found
-        if (pool[i].ofv < bestSolution.ofv) 
+        if (pool[i].ofv < bestSolution.ofv)
             updateBestSolution(pool[i], -1);
     }
 
@@ -686,7 +694,8 @@ void CretePoolSolutions()
     for (int i = sizePool-1; i >0 ; i--){
         if (pool[i].ofv == pool[i-1].ofv){
             ShakeSolution(pool[i], 0.1, 0.3);
-            pool[i].ofv = Decoder(pool[i]);
+
+            pool[i].ofv = _decoder(pool[i].rk);
         }
     }
 }
@@ -698,14 +707,14 @@ void CretePoolSolutions()
 void UpdatePoolSolutions(TSol s, int mh)
 {
     #pragma omp critical
-    {  
+    {
         int difSol = 0;
 
         // check if s is better than the worst pool solution
         if (s.ofv < pool[sizePool-1].ofv)
         {
             difSol = 1;
-            
+
             // check if s is different from the solutions in the pool
             for (int i = 0; i < (int)pool.size(); i++){
                 if (s.ofv == pool[i].ofv){
@@ -731,7 +740,7 @@ void UpdatePoolSolutions(TSol s, int mh)
  Method: UpdatePoolSolutions
  Description: read the values ​​from the row and store them in the array
 *************************************************************************************/
-void readValues(FILE *file, std::vector<std::vector<double>> &parameters, int row) 
+void readValues(FILE *file, std::vector<std::vector<double>> &parameters, int row)
 {
     double aux = 0;
     char line[100];   // Buffer line
@@ -750,18 +759,10 @@ void readValues(FILE *file, std::vector<std::vector<double>> &parameters, int ro
  Method: readParameters
  Description: read the parameter values of the MH
 *************************************************************************************/
-void readParameters(int method, int control, std::vector<std::vector<double>> &parameters, int numPar)
+void readParameters(int method, std::vector<std::vector<double>> &parameters, int numPar)
 {
     #pragma omp critical
-    {  
-        char paramFile[256];
-        if (control == 0){
-            strncpy(paramFile,"ParametersOffline.txt",255);
-        }
-        else{
-            strncpy(paramFile,"ParametersOnline.txt",255);
-        }
-
+    {
         // declare and initialize the array of strings
         const char *algorithms[] = {
             "BRKGA",     // 0
@@ -775,9 +776,9 @@ void readParameters(int method, int control, std::vector<std::vector<double>> &p
             "BRKGA-CS"   // 8
         };
 
-        FILE *file = fopen(paramFile, "r");
+        FILE *file = fopen(_mh_params_file_path, "r");
         if (file == NULL) {
-            printf("Error in open file %s.\n", paramFile);
+            printf("Error in open file %s.\n", _mh_params_file_path);
             getchar();
         }
 

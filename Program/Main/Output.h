@@ -8,8 +8,8 @@
 #include <vector>
 #include <math.h>
 
-#include "Data.h"
- 
+#include "Main/Data.h"
+
 void WriteSolutionScreen(char mh[], TSol s, int n, float timeBest, float timeTotal, char instance[])
 {
 	printf("\n\n\nMetaheuristic: %s \nInstance: %s \nsol: ", mh, instance);
@@ -20,11 +20,11 @@ void WriteSolutionScreen(char mh[], TSol s, int n, float timeBest, float timeTot
 	s.ofv = Decoder(s);
 	print = false;
 
-	printf("\nofv: %.5lf", s.ofv); 
+	printf("\nofv: %.5lf", s.ofv);
 	printf("\nTotal time: %.3f",timeTotal);
 	printf("\nBest time: %.3f\n\n",timeBest);
 
-	// print solution pool 
+	// print solution pool
 	printf("\nSolution Pool:\n");
 	for (int i = (int)pool.size()-1; i >= 0; i--)
 		printf("%.2lf\n", pool[i].ofv);
@@ -82,7 +82,7 @@ void WriteResults(char mh[], double ofv, double ofvAverage, std::vector <double>
 	fprintf(arq,"\t%s", mh);
     fprintf(arq,"\t%d", (int)ofvs.size());
     for (unsigned int i=0; i<ofvs.size(); i++){
-        fprintf(arq,"\t%lf", ofvs[i]);   
+        fprintf(arq,"\t%lf", ofvs[i]);
 	}
 	fprintf(arq,"\t%lf", ofv);
 	fprintf(arq,"\t%lf", ofvAverage);

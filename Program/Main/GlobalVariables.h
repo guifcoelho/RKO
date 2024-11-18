@@ -28,4 +28,9 @@ bool print = false;                         // print flag
 FILE *arqSol;                               // file to write the best solution found
 int run = 0;                                // current run
 
+//MH params file path
+char _mh_params_file_path[255];
+
+std::function<double(std::vector<double>)> _decoder;
+
 #endif

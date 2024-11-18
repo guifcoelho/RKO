@@ -5,7 +5,7 @@
  Method: SA
  Description: search process of the Simulated Annealing
 *************************************************************************************/
-void SA(int method, int control)
+void SA(int method, bool find_best_mh_params)
 {
     TSol s;                                  // current solution
     TSol sViz;                               // neighor solution
@@ -39,7 +39,7 @@ void SA(int method, int control)
     double R=0;                                 // reward
     std::vector <std::vector <TQ> > Q;          // Q-Table
     std::vector<int> ai;                        // actions
-    float epsilon_max = 1.0;                    // maximum epsilon 
+    float epsilon_max = 1.0;                    // maximum epsilon
     float epsilon_min = 0.1;                    // minimum epsilon
     int Ti = 1;                                 // number of epochs performed
     int restartEpsilon = 1;                     // number of restart epsilon
@@ -51,10 +51,10 @@ void SA(int method, int control)
     std::vector<std::vector<double>> parameters;
     parameters.resize(numPar);
 
-    readParameters(method, control, parameters, numPar);
+    readParameters(method, parameters, numPar);
 
     // offline control
-    if (control == 0){
+    if (!find_best_mh_params){
         // define the parameters of the SA
         SAmax   = parameters[0][0];
         alphaSA = parameters[1][0];
@@ -64,35 +64,32 @@ void SA(int method, int control)
     }
 
     // online control
-    else 
+    else
     {
-        // Q-Learning 
-        if (control == 1){
-            // create possible states of the Markov chain
-            CreateStates(parameters, method, numStates, numPar, S);
+        // create possible states of the Markov chain
+        CreateStates(parameters, method, numStates, numPar, S);
 
-            // number of restart epsilon
-            restartEpsilon = 1;  
+        // number of restart epsilon
+        restartEpsilon = 1;
 
-            // maximum epsilon  
-            epsilon_max = 1.0;  
+        // maximum epsilon
+        epsilon_max = 1.0;
 
-            // current state
-            iCurr = irandomico(0,numStates-1);
+        // current state
+        iCurr = irandomico(0,numStates-1);
 
-            // define the initial parameters of the SA
-            T0 = 1000000;
-            SAmax = (int)S[iCurr].par[0];
-            alphaSA = S[iCurr].par[1];
-            betaMin = S[iCurr].par[2];
-            betaMax = S[iCurr].par[3];
-            T0      = S[iCurr].par[4];
-        }
+        // define the initial parameters of the SA
+        T0 = 1000000;
+        SAmax = (int)S[iCurr].par[0];
+        alphaSA = S[iCurr].par[1];
+        betaMin = S[iCurr].par[2];
+        betaMax = S[iCurr].par[3];
+        T0      = S[iCurr].par[4];
     }
 
     // Create the initial solution with random keys
-    CreateInitialSolutions(s); 
-    s.ofv = Decoder(s);
+    CreateInitialSolutions(s);
+    s.ofv = _decoder(s.rk);
     sBest = s;
 
     // run the search process until stop criterion
@@ -103,10 +100,10 @@ void SA(int method, int control)
         else T = T0*0.3;
         while (T > 0.0001 && currentTime < MAXTIME)
         {
-            // Q-Learning 
-            if (control == 1){
-                // set Q-Learning parameters  
-                SetQLParameter(currentTime, Ti, restartEpsilon, epsilon_max, epsilon_min, epsilon, lf, df); 
+            // Q-Learning
+            if (find_best_mh_params){
+                // set Q-Learning parameters
+                SetQLParameter(currentTime, Ti, restartEpsilon, epsilon_max, epsilon_min, epsilon, lf, df);
 
                 // choose a action at for current state st
                 at = ChooseAction(S, st, epsilon);
@@ -116,16 +113,16 @@ void SA(int method, int control)
 
                 // define the parameters according of the current state
                 SAmax   = (int)S[iCurr].par[0];
-                alphaSA = S[iCurr].par[1];     
+                alphaSA = S[iCurr].par[1];
                 betaMin = S[iCurr].par[2];
-                betaMax = S[iCurr].par[3];           
+                betaMax = S[iCurr].par[3];
             }
-            
+
             bestOFV = INFINITY;
             while (IterT < SAmax && currentTime < MAXTIME)
             {
-                if (stop_execution.load()) return;      
-                
+                if (stop_execution.load()) return;
+
                 IterT++;
 
                 // Shake the current solution
@@ -133,12 +130,12 @@ void SA(int method, int control)
                 ShakeSolution(sViz, betaMin, betaMax);
 
                 // calculate the OFV
-                sViz.ofv = Decoder(sViz);
-                
+                sViz.ofv = _decoder(sViz.rk);
+
                 // value function is the best solution found in this iteration
                 if (sViz.ofv < bestOFV)
                     bestOFV = sViz.ofv;
-                
+
                 // calculate the delta SA
                 delta = sViz.ofv - s.ofv;
 
@@ -163,7 +160,7 @@ void SA(int method, int control)
                     // metropolis criterion
                     double x = randomico(0,1);
 
-                    if ( x < (exp(-delta/T)) )       
+                    if ( x < (exp(-delta/T)) )
                         s = sViz;
                 }
             } //End-SAmax
@@ -171,8 +168,8 @@ void SA(int method, int control)
             // if (debug && method == 1){ printf("\nT: %lf \t current solution: %lf \t best solution: %lf", T, s.ofv, sBest.ofv);
             //                            printf("\t [%.4lf, %d, %d] \t [%d, %.2lf]", R, st, at, SAmax, alphaSA);}
 
-            // Q-Learning 
-            if (control == 1){
+            // Q-Learning
+            if (find_best_mh_params){
                 // The reward function is based on improvement of the current best fitness and binary reward
                 if (improv){
                     R = 1;
@@ -186,7 +183,7 @@ void SA(int method, int control)
                 int st_1 = S[st].Ai[at];
 
                 // Update the Q-Table value
-                S[st].Qa[at] = S[st].Qa[at] + lf*(R + df*S[st_1].maxQ - S[st].Qa[at]); 
+                S[st].Qa[at] = S[st].Qa[at] + lf*(R + df*S[st_1].maxQ - S[st].Qa[at]);
 
                 if (S[st].Qa[at] > S[st].maxQ)
                 {
@@ -218,7 +215,7 @@ void SA(int method, int control)
             // terminate the search process in MAXTIME
             end_timeMH = get_time_in_seconds();
             currentTime = end_timeMH - start_timeMH;
-            
+
         } //Fim-T
 
         // reanneling

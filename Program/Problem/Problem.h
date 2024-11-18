@@ -4,7 +4,7 @@
 #ifndef _PROBLEM_H
 #define _PROBLEM_H
 
-#include "../Main/Data.h"
+#include "Main/Data.h"
 
 // Global Variables
 extern int n;                                       // size of the vector solution
@@ -12,12 +12,12 @@ extern int n;                                       // size of the vector soluti
 //---------------------- DEFINITION OF TYPES OF PROBLEM SPECIFIC --------------------
 
 // struct with node informations
-struct TNode								
+struct TNode
 {
 	int id;
 	double x;
 	double y;
-}; 
+};
 
 //------ DEFINITION OF GLOBAL CONSTANTS AND VARIABLES OF SPECIFIC PROBLEM  ----------
 
@@ -33,7 +33,7 @@ static std::vector <TNode> node;					// vector of TSP nodes
  Description: read input data of the problem
 *************************************************************************************/
 void ReadData(char nameTable[])
-{ 
+{
     char name[200] = "../Instances/";
     strcat(name,nameTable);
 
@@ -84,7 +84,7 @@ void ReadData(char nameTable[])
     										        (node[j].y - node[i].y) * (node[j].y - node[i].y) ) + 0.5 ) )/1.0;
     	}
     }
-    
+
     n = nAux;
 }
 
@@ -95,7 +95,7 @@ void ReadData(char nameTable[])
 double Decoder(TSol s)
 {
     // create an initial list of candidates
-    std::vector <int> sC(n);  
+    std::vector <int> sC(n);
     for (int j = 0; j < n; j++){ sC[j] = j;}
 
     // sort the problem vector based on the values in the rk vector
@@ -104,7 +104,7 @@ double Decoder(TSol s)
     });
 
     // problem solution
-    std::vector <int> sol; 
+    std::vector <int> sol;
 
     // partial route with three points
     sol.push_back(sC[0]);

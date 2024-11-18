@@ -13,20 +13,20 @@
 #include <vector>
 #include <string.h>
 #include <algorithm>
-#include <utility>  
-#include <numeric>  
+#include <utility>
+#include <numeric>
 #include <map>
 #include <limits>
 #include <random>
 #include <chrono>
-#include <iomanip> 
-#include <sstream> 
-#include <fstream> 
+#include <iomanip>
+#include <sstream>
+#include <fstream>
 #include <omp.h>
 #include <atomic>
 
-#include "Data.h" 
-#include "GlobalVariables.h" 
+#include "Data.h"
+#include "GlobalVariables.h"
 #include "GlobalFunctions.h"
 #include "../Problem/Problem.h"
 #include "../MH/Method.h"
@@ -47,17 +47,17 @@
 // 								MAIN FUNCTION AREA
 // *************************************************************************************/
 int main(int argc, char *argv[ ])
-{ 
-    // read scenario name file 
+{
+    // read scenario name file
     char nameScenario[256];
     strncpy(nameScenario,argv[1],255);
-    int method = atoi(argv[2]);  
-    int control = atoi(argv[3]);  
+    int method = atoi(argv[2]);
+    int control = atoi(argv[3]);
     debug = atoi(argv[4]);
 
     // file with test instances and input data
-	FILE *arqProblems; 
-    arqProblems = fopen (nameScenario, "r"); 
+	FILE *arqProblems;
+    arqProblems = fopen (nameScenario, "r");
 
     if (arqProblems == NULL){
         printf("\nERROR: File %s not found\n", nameScenario);
@@ -69,7 +69,7 @@ int main(int argc, char *argv[ ])
         printf("\nERROR: File %s not found\n", nameTable);
         exit(1);
     }
-    
+
     // best solution that is saved in out file
     TSol sBest;
     sBest.flag = 0;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[ ])
             exit(1);
         }
         strcpy(instance,nameTable);
-        
+
         double foBest = INFINITY,
                foAverage = 0;
 
@@ -106,20 +106,20 @@ int main(int argc, char *argv[ ])
         for (run=0; run<MAXRUNS; run++)
         {
             // current random seed
-            int RSEED = 0;        
+            int RSEED = 0;
 
             // obatin a seed of the clock
             RSEED = std::chrono::steady_clock::now().time_since_epoch().count();
 
             // set new seed
             if (!debug) rng.seed (RSEED);
-    
+
             // use a fixed seed in debug mode
             if (debug) rng.seed (1234);
 
             // runs
             printf("%d ", run+1);
-            
+
             // computational times
             start_time = get_time_in_seconds();
             best_time = get_time_in_seconds();
@@ -138,9 +138,9 @@ int main(int argc, char *argv[ ])
             }
 
             // ****************** execute the RKO method ******************
-            
+
             // define the total number of metaheuristics available
-            #define NUM_MH 9        
+            #define NUM_MH 9
 
             // array of pointers to metaheuristic functions
             void (*functions_MH[NUM_MH])(int, int) = {
@@ -176,7 +176,7 @@ int main(int argc, char *argv[ ])
             stop_execution.store(false);
             if (method == 9){
                 // create initial solutions in the pool of solutions
-                CretePoolSolutions();
+                CreatePoolSolutions();
 
                 // best solution found in this run
                 bestSolution = pool[0];
@@ -184,8 +184,8 @@ int main(int argc, char *argv[ ])
                 omp_set_num_threads(NUM_MH);
                 #pragma omp parallel private(RKorder, rng) shared(bestSolution, best_time, stop_execution)
                 {
-                    #pragma omp for 
-                    for (int i = 0; i < NUM_MH; ++i) { 
+                    #pragma omp for
+                    for (int i = 0; i < NUM_MH; ++i) {
                         // checks the cancellation point
                         #pragma omp cancellation point for
 
@@ -194,7 +194,7 @@ int main(int argc, char *argv[ ])
 
                         // int thread_id = omp_get_thread_num();
                         if (debug) printf("\nThread %d executing MH_%d %s.", omp_get_thread_num(), i, algorithms[i]);
-                        
+
                         // calls the metaheuristic function
                         function_mh(i, control);
 
@@ -208,7 +208,7 @@ int main(int argc, char *argv[ ])
             // run a specific metaheuristic method
             else if (method < 9){
                 // create initial solutions in the pool of solutions
-                CretePoolSolutions();
+                CreatePoolSolutions();
 
                 // best solution found in this run
                 bestSolution = pool[0];
