@@ -24,7 +24,7 @@ void fareySequence(int num, std::vector<double> &F) {
         }
         else{
             F.push_back(((double)a/b) - 0.00001);
-        }   
+        }
     }
 }
 
@@ -32,7 +32,7 @@ void fareySequence(int num, std::vector<double> &F) {
  Method: LNS
  Description: search process of the Large Neighborhood Search
 *************************************************************************************/
-void LNS(int method, int control)
+void LNS(int method, bool find_best_mh_params)
 {
     double T0 = 0;                       // initial temperature
     double T;                            // current temperature
@@ -45,8 +45,8 @@ void LNS(int method, int control)
          sLineBest,                      // best neighborhood solution
          s,                              // current solution
          sBest;                          // best solution of LNS
-        
-    float currentTime = 0;               // computational time of the search process  
+
+    float currentTime = 0;               // computational time of the search process
     int improv = 0;                      // improvement flag
 
     double start_timeMH = get_time_in_seconds();    // start computational time
@@ -63,7 +63,7 @@ void LNS(int method, int control)
     double R=0;                                 // reward
     std::vector <std::vector <TQ> > Q;          // Q-Table
     std::vector<int> ai;                        // actions
-    float epsilon_max = 1.0;                    // maximum epsilon 
+    float epsilon_max = 1.0;                    // maximum epsilon
     float epsilon_min = 0.1;                    // minimum epsilon
     int Ti = 1;                                 // number of epochs performed
     int restartEpsilon = 1;                     // number of restart epsilon
@@ -75,14 +75,14 @@ void LNS(int method, int control)
     std::vector<std::vector<double>> parameters;
     parameters.resize(numPar);
 
-    readParameters(method, control, parameters, numPar);
+    readParameters(method, parameters, numPar);
 
     // create a Farey sequence
     std::vector<double> F;
     fareySequence(7,F);
 
     // offline control
-    if (control == 0){
+    if (!find_best_mh_params){
         betaMin  = parameters[0][0];
         betaMax  = parameters[1][0];
         T0       = parameters[2][0];
@@ -91,31 +91,29 @@ void LNS(int method, int control)
 
     // online control
     else{
-        // Q-Learning 
-        if (control == 1){
-            // create possible states of the Markov chain
-            CreateStates(parameters, method, numStates, numPar, S);
+        // Q-Learning
+        // create possible states of the Markov chain
+        CreateStates(parameters, method, numStates, numPar, S);
 
-            // number of restart epsilon
-            restartEpsilon = 1;  
+        // number of restart epsilon
+        restartEpsilon = 1;
 
-            // maximum epsilon  
-            epsilon_max = 1.0;  
+        // maximum epsilon
+        epsilon_max = 1.0;
 
-            // current state
-            iCurr = irandomico(0,numStates-1);
+        // current state
+        iCurr = irandomico(0,numStates-1);
 
-            // define parameters of LNS
-            betaMin  = S[iCurr].par[0];
-            betaMax  = S[iCurr].par[1];
-            T0       = S[iCurr].par[2];
-            alphaLNS = S[iCurr].par[3];
-        }
-    }   
+        // define parameters of LNS
+        betaMin  = S[iCurr].par[0];
+        betaMax  = S[iCurr].par[1];
+        T0       = S[iCurr].par[2];
+        alphaLNS = S[iCurr].par[3];
+    }
 
     // Create the initial solution with random keys
-    CreateInitialSolutions(s); 
-    s.ofv = Decoder(s);    
+    CreateInitialSolutions(s);
+    s.ofv = decoder(s.rk);
     sBest = s;
 
     // run the search process until stop criterion
@@ -126,10 +124,10 @@ void LNS(int method, int control)
         while (T > 0.01 && currentTime < MAXTIME)
         {
             // define the parameters considering the current state and evolve a new iteration of the LNS
-            // Q-Learning 
-            if (control == 1){
-                // set Q-Learning parameters  
-                SetQLParameter(currentTime, Ti, restartEpsilon, epsilon_max, epsilon_min, epsilon, lf, df); 
+            // Q-Learning
+            if (find_best_mh_params){
+                // set Q-Learning parameters
+                SetQLParameter(currentTime, Ti, restartEpsilon, epsilon_max, epsilon_min, epsilon, lf, df);
 
                 // choose a action at for current state st
                 at = ChooseAction(S, st, epsilon);
@@ -147,7 +145,7 @@ void LNS(int method, int control)
             // Destroy the current solution s
             sLine = s;
             int intensity = irandomico(betaMin*n, betaMax*n);
-            
+
             // define which rk will be deleted - Random Removal
             std::shuffle (RKorder.begin(), RKorder.end(),rng);
 
@@ -161,12 +159,12 @@ void LNS(int method, int control)
 
                 for (int j=0; j<(int)F.size()-1; j++)
                 {
-                    if (stop_execution.load()) return;      
-                    
+                    if (stop_execution.load()) return;
+
                     // generate a random value between two intervals of the Farey sequence
                     sLine.rk[pos] = randomico(F[j], F[j+1]);
 
-                    sLine.ofv = Decoder(sLine);
+                    sLine.ofv = decoder(sLine.rk);
 
                     if (sLine.ofv < OFVbest)
                     {
@@ -182,11 +180,11 @@ void LNS(int method, int control)
 
             // local search
             sLineBest = sLine;
-            if (randomico(0,1) < 0.4) 
+            if (randomico(0,1) < 0.4)
                 RVND(sLineBest);
             else
                 NelderMeadSearch(sLineBest);
-            
+
             // calculate delta
             double delta = sLineBest.ofv - s.ofv;
 
@@ -207,14 +205,14 @@ void LNS(int method, int control)
             {
                 double x = randomico(0,1);
 
-                if ( x < (exp(-delta/T)) )       
+                if ( x < (exp(-delta/T)) )
                     s = sLineBest;
             }
 
             // if (debug && method == 7) printf("\nT: %lf \t s current: %lf \t sBest: %lf", T, s.ofv, sBest.ofv);
-        
-            // Q-Learning 
-            if (control == 1){
+
+            // Q-Learning
+            if (find_best_mh_params){
                 // The reward function is based on improvement of the current best fitness and binary reward
                 if (improv){
                     R = 1;
@@ -230,7 +228,7 @@ void LNS(int method, int control)
                 int st_1 = S[st].Ai[at];
 
                 // Update the Q-Table value
-                S[st].Qa[at] = S[st].Qa[at] + lf*(R + df*S[st_1].maxQ - S[st].Qa[at]); 
+                S[st].Qa[at] = S[st].Qa[at] + lf*(R + df*S[st_1].maxQ - S[st].Qa[at]);
 
                 if (S[st].Qa[at] > S[st].maxQ)
                 {

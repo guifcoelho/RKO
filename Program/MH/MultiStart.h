@@ -15,23 +15,23 @@ void MultiStart(int method)
     double start_timeMH = get_time_in_seconds();    // start computational time
     double end_timeMH = get_time_in_seconds();      // end computational time
 
-    CreateInitialSolutions(sBest); 
-    Decoder(sBest); 
-    
+    CreateInitialSolutions(sBest);
+    decoder(sBest.rk);
+
     // run the search process until stop criterion
     while(currentTime < MAXTIME)
     {
-        if (stop_execution.load()) return;      
-        
-        // Create the initial solution with random keys 
-		CreateInitialSolutions(s); 
-		Decoder(s); 
+        if (stop_execution.load()) return;
+
+        // Create the initial solution with random keys
+		CreateInitialSolutions(s);
+		decoder(s.rk);
 
 		if (s.ofv < sBest.ofv)
 		{
 			sBest = s;
 		}
-        
+
         // update the best solution found
         if (sBest.ofv < bestSolution.ofv) UpdatePoolSolutions(sBest, method);
 

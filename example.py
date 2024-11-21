@@ -3,7 +3,6 @@ import rkopy
 if __name__ == '__main__':
 
     def decoder(keys: list[float]):
-        # print(keys)
         return sum(keys)
 
     best_sol = rkopy.solve(
@@ -16,6 +15,7 @@ if __name__ == '__main__':
         decoder
     )
 
+    print("\nBest solution:")
     print(best_sol)
 
-# print(rkopy.teste([3]))
+    print(f"\nBest value: {decoder(best_sol)}")

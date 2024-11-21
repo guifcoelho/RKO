@@ -89,7 +89,7 @@ void SA(int method, bool find_best_mh_params)
 
     // Create the initial solution with random keys
     CreateInitialSolutions(s);
-    s.ofv = _decoder(s.rk);
+    s.ofv = decoder(s.rk);
     sBest = s;
 
     // run the search process until stop criterion
@@ -130,7 +130,7 @@ void SA(int method, bool find_best_mh_params)
                 ShakeSolution(sViz, betaMin, betaMax);
 
                 // calculate the OFV
-                sViz.ofv = _decoder(sViz.rk);
+                sViz.ofv = decoder(sViz.rk);
 
                 // value function is the best solution found in this iteration
                 if (sViz.ofv < bestOFV)

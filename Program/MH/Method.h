@@ -279,7 +279,7 @@ void NelderMeadSearch(TSol &x1)
     // compute the simplex centroid
     x0 = Blending(x1, x2, 1);
 
-    x0.ofv = _decoder(x0.rk);
+    x0.ofv = decoder(x0.rk);
     if (x0.ofv < xBest.ofv) xBest = x0;
 
     iter_count++;
@@ -293,7 +293,7 @@ void NelderMeadSearch(TSol &x1)
         // reflection point (r)
         x_r = Blending(x0, x3, -1);
 
-        x_r.ofv = _decoder(x_r.rk);
+        x_r.ofv = decoder(x_r.rk);
         if (x_r.ofv < xBest.ofv) xBest = x_r;
         eval_count++;
 
@@ -303,7 +303,7 @@ void NelderMeadSearch(TSol &x1)
             // expansion point (e)
             x_e = Blending(x_r, x0, -1);
 
-            x_e.ofv = _decoder(x_e.rk);
+            x_e.ofv = decoder(x_e.rk);
             if (x_e.ofv < xBest.ofv) xBest = x_e;
             eval_count++;
 
@@ -335,7 +335,7 @@ void NelderMeadSearch(TSol &x1)
                     // contraction point (c)
                     x_c = Blending(x_r, x0, 1);
 
-                    x_c.ofv = _decoder(x_c.rk);
+                    x_c.ofv = decoder(x_c.rk);
                     if (x_c.ofv < xBest.ofv) xBest = x_c;
                     eval_count++;
 
@@ -355,7 +355,7 @@ void NelderMeadSearch(TSol &x1)
                     // contraction point (c)
                     x_c = Blending(x0, x3, 1);
 
-                    x_c.ofv = _decoder(x_c.rk);
+                    x_c.ofv = decoder(x_c.rk);
                     if (x_c.ofv < xBest.ofv) xBest = x_c;
                     eval_count++;
 
@@ -374,12 +374,12 @@ void NelderMeadSearch(TSol &x1)
         if (shrink) {
             x2 = Blending(x1, x2, 1);
 
-            x2.ofv = _decoder(x2.rk);
+            x2.ofv = decoder(x2.rk);
             if (x2.ofv < xBest.ofv) xBest = x2;
             eval_count++;
 
             x3 = Blending(x1, x3, 1);
-            x3.ofv = _decoder(x3.rk);
+            x3.ofv = decoder(x3.rk);
             if (x3.ofv < xBest.ofv) xBest = x3;
             eval_count++;
         }
@@ -406,7 +406,7 @@ void NelderMeadSearch(TSol &x1)
         // compute the simplex centroid
         x0 = Blending(x1, x2, 1);
 
-        x0.ofv = _decoder(x0.rk);
+        x0.ofv = decoder(x0.rk);
         if (x0.ofv < xBest.ofv) xBest = x0;
 
         iter_count++;
@@ -433,7 +433,7 @@ void SwapLS(TSol &s)
             s.rk[RKorder[i]] = s.rk[RKorder[j]];
             s.rk[RKorder[j]] = temp;
 
-            s.ofv = _decoder(s.rk);
+            s.ofv = decoder(s.rk);
 
             if (s.ofv < sBest.ofv){
                 sBest = s;
@@ -463,7 +463,7 @@ void InvertLS(TSol &s)
         else
             s.rk[RKorder[i]] = 0.99999;
 
-        s.ofv = _decoder(s.rk);
+        s.ofv = decoder(s.rk);
 
         if (s.ofv < sBest.ofv){
             sBest = s;
@@ -492,7 +492,7 @@ void FareyLS(TSol &s)
             // generate a random value between two intervals of the Farey sequence
             s.rk[RKorder[i]] = randomico(F[j], F[j+1]);
 
-            s.ofv = _decoder(s.rk);
+            s.ofv = decoder(s.rk);
 
             if (s.ofv < sBest.ofv){
                 sBest = s;
@@ -534,7 +534,7 @@ void FibonacciLS(TSol &s)
             if (newrk < 1.0)
             {
                 s.rk[RKorder[i]] = newrk;
-                s.ofv = _decoder(s.rk);
+                s.ofv = decoder(s.rk);
 
                 if (s.ofv < sBest.ofv){
                     sBest = s;
@@ -549,7 +549,7 @@ void FibonacciLS(TSol &s)
             if (newrk >= 0)
             {
                 s.rk[RKorder[i]] = newrk;
-                s.ofv = _decoder(s.rk);
+                s.ofv = decoder(s.rk);
 
                 if (s.ofv < sBest.ofv){
                     sBest = s;
@@ -576,7 +576,7 @@ void TwoOptLS(TSol &s)
             // invert sequence between i and j
             std::reverse(s.rk.begin()+i,s.rk.begin()+j);
 
-            s.ofv = _decoder(s.rk);
+            s.ofv = decoder(s.rk);
 
             if (s.ofv < sBest.ofv){
                 sBest = s;
@@ -675,7 +675,7 @@ void CreatePoolSolutions()
     for (int i = 0; i < sizePool; i++){
         CreateInitialSolutions(pool[i]);
 
-        pool[i].ofv = _decoder(pool[i].rk);
+        pool[i].ofv = decoder(pool[i].rk);
     }
 
     // apply local search in the pool solutions
@@ -695,7 +695,7 @@ void CreatePoolSolutions()
         if (pool[i].ofv == pool[i-1].ofv){
             ShakeSolution(pool[i], 0.1, 0.3);
 
-            pool[i].ofv = _decoder(pool[i].rk);
+            pool[i].ofv = decoder(pool[i].rk);
         }
     }
 }
@@ -776,9 +776,9 @@ void readParameters(int method, std::vector<std::vector<double>> &parameters, in
             "BRKGA-CS"   // 8
         };
 
-        FILE *file = fopen(_mh_params_file_path, "r");
+        FILE *file = fopen(mh_params_file_path, "r");
         if (file == NULL) {
-            printf("Error in open file %s.\n", _mh_params_file_path);
+            printf("Error in open file %s.\n", mh_params_file_path);
             getchar();
         }
 
